@@ -36,6 +36,7 @@ services:
       DATABASE_HOST_REPLICA: pg_standby
       DATABASE_USER: postgres
       DATABASE_PASSWORD: password
+      SCOUT_DEV_TRACE: "true"
     user: ruby
     command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
     volumes:
