@@ -1,0 +1,49 @@
+version: "3"
+volumes:
+  pg_master_data:
+    driver: local
+  pg_standby_data:
+    driver: local
+services:
+  pg_master:
+    build:
+      context: ./docker/pg
+      dockerfile: Dockerfile.master
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_REPLICATION_USER: replication_user
+      POSTGRES_REPLICATION_PASSWORD: password
+    volumes:
+      - pg_master_data:/var/lib/postgresql/data
+  pg_standby:
+    build:
+      context: ./docker/pg
+      dockerfile: Dockerfile.standby
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_REPLICATION_USER: replication_user
+      POSTGRES_REPLICATION_PASSWORD: password
+    volumes:
+      - pg_standby_data:/var/lib/postgresql/data
+    depends_on:
+      - pg_master
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile.dev
+    environment:
+      DATABASE_HOST_MASTER: pg_master
+      DATABASE_HOST_REPLICA: pg_standby
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: password
+    user: ruby
+    command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+    volumes:
+      - .:/src
+    ports:
+      - 3000:3000
+    tty: true
+    stdin_open: true
+    depends_on:
+      - pg_master
+      - pg_standby

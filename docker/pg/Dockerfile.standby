@@ -1,0 +1,26 @@
+FROM postgres:11-alpine
+
+ENV LANG C.UTF-8
+ENV ENTRYKIT_VERSION 0.4.0
+
+RUN wget https://github.com/progrium/entrykit/releases/download/v${ENTRYKIT_VERSION}/entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+  && tar -xvzf entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+  && rm entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+  && mv entrykit /bin/entrykit \
+  && chmod +x /bin/entrykit \
+  && entrykit --symlink
+
+# ログ転送にscpを使用する
+RUN apk --update add openssh-client && rm -rf /var/cache/apk/*
+
+COPY ./setup-standby.sh /setup-standby.sh
+RUN chmod +x /setup-standby.sh
+
+# https://github.com/docker-library/postgres/blob/master/11/Dockerfile
+ENTRYPOINT [ \
+    "prehook", \
+        "/setup-standby.sh", \
+        "--", \
+    "docker-entrypoint.sh" \
+]
+CMD ["postgres"]
