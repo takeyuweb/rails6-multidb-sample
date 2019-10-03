@@ -15,8 +15,7 @@ cat >> "$PGDATA/postgresql.conf" <<EOF
 wal_level = hot_standby
 max_wal_senders = 10
 max_replication_slots = 10
-synchronous_commit = on
-synchronous_standby_names = 'pg_readonly'
+synchronous_commit = off
 EOF
 
 echo "host replication $POSTGRES_REPLICATION_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
