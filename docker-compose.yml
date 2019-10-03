@@ -11,9 +11,8 @@ services:
       dockerfile: Dockerfile.primary
     command: postgres -c log_destination=stderr -c log_statement=all
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_REPLICATION_USER: replication_user
-      POSTGRES_REPLICATION_PASSWORD: password
     volumes:
       - pg_primary_data:/var/lib/postgresql/data
   pg_readonly:
@@ -22,9 +21,8 @@ services:
       dockerfile: Dockerfile.readonly
     command: postgres -c log_destination=stderr -c log_statement=all
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_REPLICATION_USER: replication_user
-      POSTGRES_REPLICATION_PASSWORD: password
     volumes:
       - pg_readonly_data:/var/lib/postgresql/data
     depends_on:

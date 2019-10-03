@@ -2,7 +2,7 @@
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-CREATE ROLE $POSTGRES_REPLICATION_USER LOGIN REPLICATION PASSWORD '$POSTGRES_REPLICATION_PASSWORD';
+CREATE ROLE replication_user LOGIN REPLICATION PASSWORD 'replicationpassword';
 EOSQL
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
@@ -18,4 +18,4 @@ max_replication_slots = 10
 synchronous_commit = off
 EOF
 
-echo "host replication $POSTGRES_REPLICATION_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
+echo "host replication replication_user 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
