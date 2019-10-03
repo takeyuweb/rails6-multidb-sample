@@ -1,39 +1,39 @@
 version: "3"
 volumes:
-  pg_master_data:
+  pg_primary_data:
     driver: local
-  pg_standby_data:
+  pg_readonly_data:
     driver: local
 services:
-  pg_master:
+  pg_primary:
     build:
       context: ./docker/pg
-      dockerfile: Dockerfile.master
+      dockerfile: Dockerfile.primary
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_REPLICATION_USER: replication_user
       POSTGRES_REPLICATION_PASSWORD: password
     volumes:
-      - pg_master_data:/var/lib/postgresql/data
-  pg_standby:
+      - pg_primary_data:/var/lib/postgresql/data
+  pg_readonly:
     build:
       context: ./docker/pg
-      dockerfile: Dockerfile.standby
+      dockerfile: Dockerfile.readonly
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_REPLICATION_USER: replication_user
       POSTGRES_REPLICATION_PASSWORD: password
     volumes:
-      - pg_standby_data:/var/lib/postgresql/data
+      - pg_readonly_data:/var/lib/postgresql/data
     depends_on:
-      - pg_master
+      - pg_primary
   app:
     build:
       context: ./docker/app
       dockerfile: Dockerfile.dev
     environment:
-      DATABASE_HOST_MASTER: pg_master
-      DATABASE_HOST_REPLICA: pg_standby
+      DATABASE_HOST_PRIMARY: pg_primary
+      DATABASE_HOST_READONLY: pg_readonly
       DATABASE_USER: postgres
       DATABASE_PASSWORD: password
       SCOUT_DEV_TRACE: "true"
@@ -46,5 +46,5 @@ services:
     tty: true
     stdin_open: true
     depends_on:
-      - pg_master
-      - pg_standby
+      - pg_primary
+      - pg_readonly

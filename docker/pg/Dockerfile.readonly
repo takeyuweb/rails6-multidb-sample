@@ -13,13 +13,13 @@ RUN wget https://github.com/progrium/entrykit/releases/download/v${ENTRYKIT_VERS
 # ログ転送にscpを使用する
 RUN apk --update add openssh-client && rm -rf /var/cache/apk/*
 
-COPY ./setup-standby.sh /setup-standby.sh
-RUN chmod +x /setup-standby.sh
+COPY ./setup-readonly.sh /setup-readonly.sh
+RUN chmod +x /setup-readonly.sh
 
-# https://github.com/docker-library/postgres/blob/master/11/Dockerfile
+# https://github.com/docker-library/postgres/blob/primary/11/Dockerfile
 ENTRYPOINT [ \
     "prehook", \
-        "/setup-standby.sh", \
+        "/setup-readonly.sh", \
         "--", \
     "docker-entrypoint.sh" \
 ]

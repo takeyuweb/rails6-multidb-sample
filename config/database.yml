@@ -29,22 +29,22 @@ development:
   primary:
     <<: *default
     database: MyApp_development
-    host: <%= ENV.fetch('DATABASE_HOST_MASTER') { 'db' } %>
+    host: <%= ENV.fetch('DATABASE_HOST_PRIMARY') { 'db' } %>
   readonly:
     <<: *default
     database: MyApp_development
-    host: <%= ENV.fetch('DATABASE_HOST_REPLICA') { 'db' } %>
+    host: <%= ENV.fetch('DATABASE_HOST_READONLY') { 'db' } %>
     replica: true
 
 test:
   primary:
     <<: *default
     database: MyApp_test
-    host: <%= ENV.fetch('DATABASE_HOST_MASTER') { 'db' } %>
+    host: <%= ENV.fetch('DATABASE_HOST_PRIMARY') { 'db' } %>
   readonly:
     <<: *default
     database: MyApp_test
-    host: <%= ENV.fetch('DATABASE_HOST_REPLICA') { 'db' } %>
+    host: <%= ENV.fetch('DATABASE_HOST_READONLY') { 'db' } %>
     replica: true
 
 production:
