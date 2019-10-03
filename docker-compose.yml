@@ -9,7 +9,7 @@ services:
     build:
       context: ./docker/pg
       dockerfile: Dockerfile.primary
-    command: postgres -c log_destination=stderr -c log_statement=all -c log_connections=on -c log_disconnections=on
+    command: postgres -c log_destination=stderr -c log_statement=all
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_REPLICATION_USER: replication_user
@@ -20,7 +20,7 @@ services:
     build:
       context: ./docker/pg
       dockerfile: Dockerfile.readonly
-    command: postgres -c log_destination=stderr -c log_statement=all -c log_connections=on -c log_disconnections=on
+    command: postgres -c log_destination=stderr -c log_statement=all
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_REPLICATION_USER: replication_user
